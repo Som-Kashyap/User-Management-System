@@ -97,6 +97,7 @@ void searchUser(connection& conn) {
 	cout << "Search User: " << endl;
 	cout << "1) Search by Name" << endl;
 	cout << "2) Search by ID" << endl;
+	cout << "3) Search by Gender" << endl;
 	cout << "Enter your choice: ";
 	cin >> searchChoice;
 
@@ -119,9 +120,16 @@ void searchUser(connection& conn) {
 		conn.getData("SELECT * FROM users WHERE id = " + std::to_string(id));
 		break;
 	}
-
+	case 3: {
+		string gender;
+		cout << "Enter gender to search: ";
+		cin >> gender;
+		cout << "Search result....." << endl;
+		conn.getData("SELECT * FROM users WHERE gender = '" + gender + "'");
+		break;
 	}
 
+	}
 }
 
 void exitProgram() {
@@ -154,9 +162,16 @@ int main()
 
 	int choice;
 
-	menu(choice);
+	while (1) {
+		menu(choice);
 
-	logic(choice, conn);
+		if (choice == 4) {
+			break;
+		}
+
+		logic(choice, conn);
+	}
+	
 
 	return 0;
 }
