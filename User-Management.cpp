@@ -46,7 +46,7 @@ void menu(int &choice) {
 
 }
 
-void addUser(connection& conn)
+void addUser(connection& conn , int &choice)
 {
 	string name;
 	int id;
@@ -54,12 +54,20 @@ void addUser(connection& conn)
 	string email;
 	string gender;
 
+	cout << "-----------------------------------------------" << std::endl;
 	cout << "Enter your Name... ";
 	cin >> name;
+
 	cout << "Got name\n";
 
 	cout << "Enter your ID... ";
-	cin >> id;
+
+	while (!(cin >> id)) {
+		cout << "Invalid input. Please enter a valid integer for ID: ";
+		cin.clear();
+		cin.ignore(numeric_limits<streamsize>::max(), '\n');
+	}
+
 	cout << "Got id\n";
 
 	cout << "Create Password... ";
@@ -70,11 +78,23 @@ void addUser(connection& conn)
 	cin >> email;
 	cout << "Got email\n";
 
-	cout << "Enter your Gender... ";
+	cout << "Enter your Gender(male/female/other)... ";
 	cin >> gender;
+
+	for ( int i = 0; i < gender.length(); i++)
+	{
+
+	    if (!isalpha(gender[i])) {
+			cout << "Invalid gender. Please enter a valid gender." << endl;
+			cin.clear();
+			cin.ignore(numeric_limits<streamsize>::max(), '\n');
+		}
+	}
 	cout << "Got gender\n";
 
+
 	conn.execute("INSERT INTO users (name, user_id, password, email, gender) VALUES ('" + name + "', " + std::to_string(id) + ", '" + password + "', '" + email + "', '" + gender + "')");
+
 }
 
 void viewUsers(connection& conn) {
@@ -94,6 +114,7 @@ void searchUser(connection& conn) {
 
 	int searchChoice;
 
+	cout << "-----------------------------------------------" << std::endl;
 	cout << "Search User: " << endl;
 	cout << "1) Search by Name" << endl;
 	cout << "2) Search by ID" << endl;
@@ -107,8 +128,10 @@ void searchUser(connection& conn) {
 		string name;
 		cout << "Enter Name to search: ";
 		cin >> name;
+		cout << "-----------------------------------------------" << std::endl;
 		cout << "Search result....." << endl;
 		conn.getData("SELECT * FROM users WHERE name = '" + name + "'");
+		cout << "-----------------------------------------------" << std::endl;
 		break;
 	}
 
@@ -116,14 +139,16 @@ void searchUser(connection& conn) {
 		int id;
 		cout << "Enter ID to search: ";
 		cin >> id;
+		cout << "-----------------------------------------------" << std::endl;
 		cout << "Search result....." << endl;
-		conn.getData("SELECT * FROM users WHERE id = " + std::to_string(id));
+		conn.getData("SELECT * FROM users WHERE user_id = " + std::to_string(id));
 		break;
 	}
 	case 3: {
 		string gender;
 		cout << "Enter gender to search: ";
 		cin >> gender;
+		cout << "-----------------------------------------------" << std::endl;
 		cout << "Search result....." << endl;
 		conn.getData("SELECT * FROM users WHERE gender = '" + gender + "'");
 		break;
@@ -140,7 +165,7 @@ void logic(int &choice , connection& conn) {
 
 	switch (choice) {
 
-	case 1:addUser(conn);
+	case 1:addUser(conn , choice);
 		   break;
 
 	case 2: viewUsers(conn);
@@ -162,16 +187,16 @@ int main()
 
 	int choice;
 
-	while (1) {
-		menu(choice);
 
-		if (choice == 4) {
-			break;
+		while (1) {
+			menu(choice);
+
+			if (choice == 4) {
+				exitProgram();
+				break;
+			}
+			logic(choice, conn);
 		}
-
-		logic(choice, conn);
-	}
-	
 
 	return 0;
 }

@@ -21,9 +21,11 @@ void connection::execute(const std::string& query)
 	}
 	catch (sql::SQLException& e)
 	{
+		std::cout << "-----------------------------------------------" << std::endl;
 		std::cout << "SQL Error: " << e.what() << '\n';
 		std::cout << "Error Code: " << e.getErrorCode() << '\n';
 		std::cout << "SQLState: " << e.getSQLState() << '\n';
+		std::cout << "-----------------------------------------------" << std::endl;
 	}
 }
 
@@ -47,9 +49,11 @@ void connection::getData(const std::string& query) {
 	}
 	catch (sql::SQLException& e)
 	{
+		std::cout<< "-----------------------------------------------" << std::endl;
 		std::cout << "SQL Error: " << e.what() << '\n';
 		std::cout << "Error Code: " << e.getErrorCode() << '\n';
 		std::cout << "SQLState: " << e.getSQLState() << '\n';
+		std::cout << "-----------------------------------------------" << std::endl;
 	}
 }
 
