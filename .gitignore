@@ -5,3 +5,4 @@ Release/
 *.user
 *.VC.db
 *.opendb
+*.dll
