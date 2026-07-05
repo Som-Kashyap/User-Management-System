@@ -40,7 +40,8 @@ void connection::getData(const std::string& query) {
 			std::cout <<"Name: " + res->getString("name") << " | ";
 			std::cout <<"user_id: "  << res->getInt("user_id") << " | ";
 			std::cout <<"password: " + res->getString("password") << " | ";
-			std::cout <<"Email: " + res->getString("email") << std::endl;
+			std::cout <<"Email: " + res->getString("email") << " | ";
+			std::cout << "Gender: " + res->getString("gender") << std::endl;
 			std::cout << "-----------------------------------------------" << std::endl;
 		}
 

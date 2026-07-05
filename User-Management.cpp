@@ -40,7 +40,8 @@ void menu(int &choice) {
 	cout << "1. Add User" << endl;
 	cout << "2. View Users" << endl;
 	cout << "3. Search User" << endl;
-	cout << "4. Exit" << endl;
+	cout << "4. Edit User" << endl;
+	cout << "5. Exit" << endl;
 	cout << "Enter your choice: ";
 	cin >> choice;
 
@@ -157,6 +158,76 @@ void searchUser(connection& conn) {
 	}
 }
 
+void editUser(connection& conn) {
+
+	int id;
+
+	cout << "Enter the ID of the user you want to edit: ";
+	while (!(cin >> id)) {
+		cout << "Invalid input. Please enter a valid integer for ID: ";
+		cin.clear();
+		cin.ignore(numeric_limits<streamsize>::max(), '\n');
+	}
+
+	int editChoice;
+
+	cout << "-----------------------------------------------" << std::endl;
+	cout << "Edit User: " << endl;
+	cout << "1) Edit Name" << endl;
+	cout << "2) Edit Password" << endl;
+	cout << "3) Edit Email" << endl;
+	cout << "4) Edit Gender" << endl;
+
+	cout << "Enter your choice: ";
+
+	while (!(cin >> editChoice)) {
+		cout << "Invalid input. Please enter a valid integer for choice: ";
+		cin.clear();
+		cin.ignore(numeric_limits<streamsize>::max(), '\n');
+	}
+
+	switch (editChoice) {
+
+	case 1: {
+
+		string name;
+		cout << "Enter new name...";
+		cin >> name;
+		conn.execute("UPDATE users SET name = '" + name + "' WHERE user_id = " + std::to_string(id));
+		break;
+	}
+
+	case 2: {
+		string password;
+		cout << "Enter new password...";
+		cin >> password;
+		conn.execute("UPDATE users SET password = '" + password + "' WHERE user_id = " + std::to_string(id)); 
+		break;
+	}
+
+	case 3: {
+		string email;
+		cout << "Enter new email...";
+		cin >> email;
+		conn.execute("UPDATE users SET email = '" + email + "' WHERE user_id = " + std::to_string(id));
+		break;
+	}
+
+	case 4: {
+		string gender;
+		cout << "Enter gender...";
+		cin >> gender;
+		conn.execute("UPDATE users SET gender = '" + gender + "' WHERE user_id = " + std::to_string(id));
+		break;
+	}
+
+	}
+	std::cout << "-----------------------------------------------" << std::endl;
+	cout << "New Details: " << endl;
+	conn.getData("SELECT * FROM users WHERE user_id = " + std::to_string(id));
+
+}
+
 void exitProgram() {
 	cout << "Program terminated..." << endl;
 }
@@ -174,7 +245,10 @@ void logic(int &choice , connection& conn) {
 	case 3: searchUser(conn);
 		   break;
 
-	case 4: exitProgram();
+	case 4: editUser(conn);
+		break;
+		
+	case 5: exitProgram();
 		break;
 
 	}
@@ -191,7 +265,7 @@ int main()
 		while (1) {
 			menu(choice);
 
-			if (choice == 4) {
+			if (choice == 5) {
 				exitProgram();
 				break;
 			}
