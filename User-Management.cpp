@@ -34,14 +34,15 @@ public:
 	
 };
 
-void menu(int &choice) {
+void menu(connection& conn,int &choice) {
 
 	cout << "---User Management System---" << endl;
 	cout << "1. Add User" << endl;
 	cout << "2. View Users" << endl;
 	cout << "3. Search User" << endl;
 	cout << "4. Edit User" << endl;
-	cout << "5. Exit" << endl;
+	cout << "5. Delete User" << endl;
+	cout << "6. Exit" << endl;
 	cout << "Enter your choice: ";
 	cin >> choice;
 
@@ -222,10 +223,39 @@ void editUser(connection& conn) {
 	}
 
 	}
-	std::cout << "-----------------------------------------------" << std::endl;
+	cout << "-----------------------------------------------" << endl;
 	cout << "New Details: " << endl;
 	conn.getData("SELECT * FROM users WHERE user_id = " + std::to_string(id));
 
+}
+
+void deleteUser(connection& conn , int choice) {
+
+	int id;
+	char deleteChoice;
+	cout << "-----------------------------------------------" << endl;
+	cout << "Enter the ID of the user you want to delete: ";
+	while (!(cin >> id)) {
+		cout << "Invalid input. Please enter a valid integer for ID: ";
+		cin.clear();
+		cin.ignore(numeric_limits<streamsize>::max(), '\n');
+	}
+
+	cout << "User with ID: " << id << " is: "<<endl;
+	conn.getData("SELECT * FROM users WHERE user_id = " + std::to_string(id));
+	cout << "Are you sure you want to delete this user? (y/n): ";
+
+	while (!(cin >> deleteChoice) || (deleteChoice != 'y' && deleteChoice != 'n')) {
+		cout << "Invalid input. Please enter 'y' or 'n': ";
+		cin.clear();
+		cin.ignore(numeric_limits<streamsize>::max(), '\n');
+	}
+
+	if (deleteChoice == 'y') {
+		conn.execute("DELETE FROM users WHERE user_id = " + std::to_string(id));
+		cout << "User with ID: " << id << " has been deleted." << endl;
+	}
+	else menu(conn , choice);
 }
 
 void exitProgram() {
@@ -248,9 +278,11 @@ void logic(int &choice , connection& conn) {
 	case 4: editUser(conn);
 		break;
 		
-	case 5: exitProgram();
+	case 5: deleteUser(conn, choice);
 		break;
 
+	case 6: exitProgram();
+		break;
 	}
 }
 
@@ -263,9 +295,9 @@ int main()
 
 
 		while (1) {
-			menu(choice);
+			menu(conn, choice);
 
-			if (choice == 5) {
+			if (choice == 6) {
 				exitProgram();
 				break;
 			}
