@@ -87,6 +87,8 @@ void editUser(connection& conn, int& id, State& state) {
 		cin.ignore(numeric_limits<streamsize>::max(), '\n');
 	}
 
+	if (editChoice >= 1 && editChoice <= 4) isEdited = true;
+
 	switch (editChoice) {
 
 	case 1: {
@@ -127,9 +129,11 @@ void editUser(connection& conn, int& id, State& state) {
 	}
 	}
 	std::cout << "-----------------------------------------------" << endl;
-	std::cout << "New Details: " << endl;
-	conn.getData("SELECT * FROM users WHERE user_id = " + std::to_string(id));
-
+	if (isEdited) {
+		std::cout << "New Details: " << endl;
+		conn.getData("SELECT * FROM users WHERE user_id = " + std::to_string(id));
+	}
+	
 }
 
 void deleteUser(connection& conn, int choice, int& id , State& state) {
@@ -250,7 +254,6 @@ bool signup(connection& conn , int &choice , State& state , Session& session)
 		std::cout << "Enter your Name... ";
 		cin >> name;
 
-		std::cout << "Got name\n";
 
 		std::cout << "Enter your ID... ";
 
@@ -260,15 +263,11 @@ bool signup(connection& conn , int &choice , State& state , Session& session)
 			cin.ignore(numeric_limits<streamsize>::max(), '\n');
 		}
 
-		std::cout << "Got id\n";
-
 		std::cout << "Create Password... ";
 		cin >> password;
-		std::cout << "Got password\n";
 
 		std::cout << "Enter your Email... ";
 		cin >> email;
-		std::cout << "Got email\n";
 
 		std::cout << "Enter your Gender(male/female/other)... ";
 		cin >> gender;
@@ -282,7 +281,6 @@ bool signup(connection& conn , int &choice , State& state , Session& session)
 				cin.ignore(numeric_limits<streamsize>::max(), '\n');
 			}
 		}
-		std::cout << "Got gender\n";
 
 		conn.execute("INSERT INTO users (name, user_id, password, email, gender) VALUES ('" + name + "', " + std::to_string(id) + ", '" + password + "', '" + email + "', '" + gender + "')");
 
