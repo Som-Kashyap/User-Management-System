@@ -48,14 +48,15 @@ void menu(connection& conn , State& state) {
 
 	int choice = 0;
 
-	cout << "---User Management System---" << endl;
-	cout << "1. Login" << endl;
-	cout << "2. Signup" << endl;
-	cout << "3. Exit" << endl;
-	cout << "Enter your choice: ";
+	std::cout << "-----------------------------------------------" << std::endl;
+	std::cout << "---User Management System---" << endl;
+	std::cout << "1. Login" << endl;
+	std::cout << "2. Signup" << endl;
+	std::cout << "3. Exit" << endl;
+	std::cout << "Enter your choice: ";
 
 	while (!(cin >> choice)) {
-		cout << "Invalid gender. Please enter a valid gender." << endl;
+		std::cout << "Invalid gender. Please enter a valid gender." << endl;
 		cin.clear();
 		cin.ignore(numeric_limits<streamsize>::max(), '\n');
 	}
@@ -65,21 +66,23 @@ void menu(connection& conn , State& state) {
 	else if (choice == 3) state = State::Exit;
 }
 
-void editUser(connection& conn, int& id) {
+void editUser(connection& conn, int& id, State& state) {
 
 	int editChoice;
+	bool isEdited = false;
 
-	cout << "-----------------------------------------------" << std::endl;
-	cout << "Edit User: " << endl;
-	cout << "1) Edit Name" << endl;
-	cout << "2) Edit Password" << endl;
-	cout << "3) Edit Email" << endl;
-	cout << "4) Edit Gender" << endl;
+	std::cout << "-----------------------------------------------" << std::endl;
+	std::cout << "Edit User: " << endl;
+	std::cout << "1) Edit Name" << endl;
+	std::cout << "2) Edit Password" << endl;
+	std::cout << "3) Edit Email" << endl;
+	std::cout << "4) Edit Gender" << endl;
+	std::cout << "5) Return " << endl;
 
-	cout << "Enter your choice: ";
+	std::cout << "Enter your choice: ";
 
 	while (!(cin >> editChoice)) {
-		cout << "Invalid input. Please enter a valid integer for choice: ";
+		std::cout << "Invalid input. Please enter a valid integer for choice: ";
 		cin.clear();
 		cin.ignore(numeric_limits<streamsize>::max(), '\n');
 	}
@@ -89,7 +92,7 @@ void editUser(connection& conn, int& id) {
 	case 1: {
 
 		string name;
-		cout << "Enter new name...";
+		std::cout << "Enter new name...";
 		cin >> name;
 		conn.execute("UPDATE users SET name = '" + name + "' WHERE user_id = " + std::to_string(id));
 		break;
@@ -97,7 +100,7 @@ void editUser(connection& conn, int& id) {
 
 	case 2: {
 		string password;
-		cout << "Enter new password...";
+		std::cout << "Enter new password...";
 		cin >> password;
 		conn.execute("UPDATE users SET password = '" + password + "' WHERE user_id = " + std::to_string(id));
 		break;
@@ -105,7 +108,7 @@ void editUser(connection& conn, int& id) {
 
 	case 3: {
 		string email;
-		cout << "Enter new email...";
+		std::cout << "Enter new email...";
 		cin >> email;
 		conn.execute("UPDATE users SET email = '" + email + "' WHERE user_id = " + std::to_string(id));
 		break;
@@ -113,15 +116,18 @@ void editUser(connection& conn, int& id) {
 
 	case 4: {
 		string gender;
-		cout << "Enter gender...";
+		std::cout << "Enter gender...";
 		cin >> gender;
 		conn.execute("UPDATE users SET gender = '" + gender + "' WHERE user_id = " + std::to_string(id));
 		break;
 	}
-
+	case 5: {
+		state = State::User;
+		break;
 	}
-	cout << "-----------------------------------------------" << endl;
-	cout << "New Details: " << endl;
+	}
+	std::cout << "-----------------------------------------------" << endl;
+	std::cout << "New Details: " << endl;
 	conn.getData("SELECT * FROM users WHERE user_id = " + std::to_string(id));
 
 }
@@ -130,19 +136,20 @@ void deleteUser(connection& conn, int choice, int& id , State& state) {
 
 
 	char deleteChoice;
-	cout << "-----------------------------------------------" << endl;
+	std::cout << "-----------------------------------------------" << endl;
 
-	cout << "Are you sure you want to delete your account? (y/n): ";
+	std::cout << "Are you sure you want to delete your account? (y/n): ";
 
 	while (!(cin >> deleteChoice) || (deleteChoice != 'y' && deleteChoice != 'n')) {
-		cout << "Invalid input. Please enter 'y' or 'n': ";
+		std::cout << "Invalid input. Please enter 'y' or 'n': ";
 		cin.clear();
 		cin.ignore(numeric_limits<streamsize>::max(), '\n');
 	}
 
 	if (deleteChoice == 'y') {
 		conn.execute("DELETE FROM users WHERE user_id = " + std::to_string(id));
-		cout << "User with ID: " << id << " has been deleted." << endl;
+		std::cout << "User with ID: " << id << " has been deleted." << endl;
+		state = State::Menu;
 	}
 	else menu(conn,state);
 }
@@ -153,29 +160,29 @@ void userLogin(connection& conn, int choice , State& state , Session& session ) 
 	string email;
 	string password;
 
-	cout << "-----------------------------------------------" << std::endl;
-	cout << "LOGIN" << endl;
-	cout << "Enter user_id...";
+	std::cout << "-----------------------------------------------" << std::endl;
+	std::cout << "LOGIN" << endl;
+	std::cout << "Enter user_id...";
 
 	while (!(cin >> id)) {
-		cout << "Invalid input. Please enter a valid integer for ID: ";
+		std::cout << "Invalid input. Please enter a valid integer for ID: ";
 		cin.clear();
 		cin.ignore(numeric_limits<streamsize>::max(), '\n');
 	}
 
 	session.currUserId = id;
 
-	cout << "Enter email...";
+	std::cout << "Enter email...";
 	cin >> email;
 	
-	cout << "Enter password...";
+	std::cout << "Enter password...";
 	cin >> password;
 
 	bool ok = conn.checkEmail(id, email, password);
 
 	if (!ok)
 	{
-		cout << "Invalid email or password!\n";
+		std::cout << "Invalid email or password!\n";
 		state = State::Login;
 	}
 	else
@@ -191,15 +198,16 @@ void user(connection& conn, int choice ,State& state, Session& session) {
 
 	string name = conn.getName(session.currUserId);
 
-	cout << "-----------------------------------------------" << std::endl;
-	cout << "Welcome " << name << endl;
-	cout << "1) View Details" << endl;
-	cout << "2) Edit Details" << endl;
-	cout << "3) Delete Account" << endl;
-	cout << "Enter choice..." << endl;
+	std::cout << "-----------------------------------------------" << std::endl;
+	std::cout << "Welcome " << name << endl;
+	std::cout << "1) View Details" << endl;
+	std::cout << "2) Edit Details" << endl;
+	std::cout << "3) Delete Account" << endl;
+	std::cout << "4) Logout " << endl;
+	std::cout << "Enter choice...";
 
-	while (!(cin >> userChoice) || (userChoice <= 0 || userChoice >= 3)) {
-		cout << "Invalid input. Please enter a valid integer for ID: ";
+	while (!(cin >> userChoice) || (userChoice <= 0 || userChoice > 4)) {
+		std::cout << "Invalid input. Please enter a valid choice: ";
 		cin.clear();
 		cin.ignore(numeric_limits<streamsize>::max(), '\n');
 	}
@@ -207,70 +215,89 @@ void user(connection& conn, int choice ,State& state, Session& session) {
 	switch (userChoice) {
 
 	case 1: {
+		std::cout << "-----------------------------------------------" << std::endl;
+		std::cout << "Account Details: " << endl;
 		conn.getData("SELECT * FROM users WHERE user_id = " + to_string(session.currUserId));
 		break;
 	}
 	case 2: {
-		editUser(conn , session.currUserId);
+		editUser(conn , session.currUserId , state);
 		break;
 	}
 	case 3: {
 		deleteUser(conn, choice , session.currUserId, state);
 		break;
 	}
+	case 4: {
+		std::cout << "Logging out......." << endl;
+		state = State::Menu;
+		break;
+	}
 	}
 }
 
-void signup(connection& conn , int &choice , State& state , Session& session)
+bool signup(connection& conn , int &choice , State& state , Session& session)
 {
-	string name;
-	int id;
-	string password;
-	string email;
-	string gender;
+	try {
+		string name;
+		int id;
+		string password;
+		string email;
+		string gender;
 
 
-	cout << "-----------------------------------------------" << std::endl;
-	cout << "Enter your Name... ";
-	cin >> name;
+		std::cout << "-----------------------------------------------" << std::endl;
+		std::cout << "Enter your Name... ";
+		cin >> name;
 
-	cout << "Got name\n";
+		std::cout << "Got name\n";
 
-	cout << "Enter your ID... ";
+		std::cout << "Enter your ID... ";
 
-	while (!(cin >> id)) {
-		cout << "Invalid input. Please enter a valid integer for ID: ";
-		cin.clear();
-		cin.ignore(numeric_limits<streamsize>::max(), '\n');
-	}
-
-	cout << "Got id\n";
-
-	cout << "Create Password... ";
-	cin >> password;
-	cout << "Got password\n";
-
-	cout << "Enter your Email... ";
-	cin >> email;
-	cout << "Got email\n";
-
-	cout << "Enter your Gender(male/female/other)... ";
-	cin >> gender;
-
-	for ( int i = 0; i < gender.length(); i++)
-	{
-
-	    if (!isalpha(gender[i])) {
-			cout << "Invalid gender. Please enter a valid gender." << endl;
+		while (!(cin >> id)) {
+			std::cout << "Invalid input. Please enter a valid integer for ID: ";
 			cin.clear();
 			cin.ignore(numeric_limits<streamsize>::max(), '\n');
 		}
+
+		std::cout << "Got id\n";
+
+		std::cout << "Create Password... ";
+		cin >> password;
+		std::cout << "Got password\n";
+
+		std::cout << "Enter your Email... ";
+		cin >> email;
+		std::cout << "Got email\n";
+
+		std::cout << "Enter your Gender(male/female/other)... ";
+		cin >> gender;
+
+		for (int i = 0; i < gender.length(); i++)
+		{
+
+			if (!isalpha(gender[i])) {
+				std::cout << "Invalid gender. Please enter a valid gender." << endl;
+				cin.clear();
+				cin.ignore(numeric_limits<streamsize>::max(), '\n');
+			}
+		}
+		std::cout << "Got gender\n";
+
+		conn.execute("INSERT INTO users (name, user_id, password, email, gender) VALUES ('" + name + "', " + std::to_string(id) + ", '" + password + "', '" + email + "', '" + gender + "')");
+
+		return true;
 	}
-	cout << "Got gender\n";
 
+	catch (sql::SQLException& e)
+	{
+		std::cout << "SQL Error: " << e.what() << '\n';
+		std::cout << "Error Code: " << e.getErrorCode() << '\n';
+		std::cout << "SQLState: " << e.getSQLState() << '\n';
 
-	conn.execute("INSERT INTO users (name, user_id, password, email, gender) VALUES ('" + name + "', " + std::to_string(id) + ", '" + password + "', '" + email + "', '" + gender + "')");
-
+		return false;
+	}
+	
 }
 
 void viewUsers(connection& conn) {
@@ -290,42 +317,42 @@ void searchUser(connection& conn) {
 
 	int searchChoice;
 
-	cout << "-----------------------------------------------" << std::endl;
-	cout << "Search User: " << endl;
-	cout << "1) Search by Name" << endl;
-	cout << "2) Search by ID" << endl;
-	cout << "3) Search by Gender" << endl;
-	cout << "Enter your choice: ";
+	std::cout << "-----------------------------------------------" << std::endl;
+	std::cout << "Search User: " << endl;
+	std::cout << "1) Search by Name" << endl;
+	std::cout << "2) Search by ID" << endl;
+	std::cout << "3) Search by Gender" << endl;
+	std::cout << "Enter your choice: ";
 	cin >> searchChoice;
 
 	switch (searchChoice) {
 
 	case 1: {
 		string name;
-		cout << "Enter Name to search: ";
+		std::cout << "Enter Name to search: ";
 		cin >> name;
-		cout << "-----------------------------------------------" << std::endl;
-		cout << "Search result....." << endl;
+		std::cout << "-----------------------------------------------" << std::endl;
+		std::cout << "Search result....." << endl;
 		conn.getData("SELECT * FROM users WHERE name = '" + name + "'");
-		cout << "-----------------------------------------------" << std::endl;
+		std::cout << "-----------------------------------------------" << std::endl;
 		break;
 	}
 
 	case 2: {
 		int id;
-		cout << "Enter ID to search: ";
+		std::cout << "Enter ID to search: ";
 		cin >> id;
-		cout << "-----------------------------------------------" << std::endl;
-		cout << "Search result....." << endl;
+		std::cout << "-----------------------------------------------" << std::endl;
+		std::cout << "Search result....." << endl;
 		conn.getData("SELECT * FROM users WHERE user_id = " + std::to_string(id));
 		break;
 	}
 	case 3: {
 		string gender;
-		cout << "Enter gender to search: ";
+		std::cout << "Enter gender to search: ";
 		cin >> gender;
-		cout << "-----------------------------------------------" << std::endl;
-		cout << "Search result....." << endl;
+		std::cout << "-----------------------------------------------" << std::endl;
+		std::cout << "Search result....." << endl;
 		conn.getData("SELECT * FROM users WHERE gender = '" + gender + "'");
 		break;
 	}
@@ -334,16 +361,23 @@ void searchUser(connection& conn) {
 }
 
 void exitProgram() {
-	cout << "Program terminated..." << endl;
+	std::cout << "Program terminated..." << endl;
 }
 
 void logic(int &choice , connection& conn , State& state , Session& session) {
 
 
-	if (state == State::Menu) menu(conn , state);
-	else if (state == State::Login) userLogin(conn, choice, state , session);
+	if (state == State::Menu) menu(conn, state);
+	else if (state == State::Login) userLogin(conn, choice, state, session);
 	else if (state == State::User) user(conn, choice, state, session);
+	else if (state == State::Signup) {
 
+		bool res = signup(conn, choice, state, session);
+
+		if (res) state = State::Login;
+		else state = State::Signup;
+	}
+	else if (state == State::Exit) exitProgram();
 }
 
 int main()
