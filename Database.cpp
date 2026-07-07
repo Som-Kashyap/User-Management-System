@@ -58,6 +58,50 @@ void connection::getData(const std::string& query) {
 	}
 }
 
+bool connection::checkEmail(const int id,const std::string& email,const std::string& password) {
+		
+	stmt = conn->createStatement();
+	res = stmt->executeQuery("SELECT * FROM users WHERE user_id = " + std::to_string(id));
+
+	if (!res->next()) {
+		delete res;
+		delete stmt;
+		return false;
+	}
+
+	std::string actualEmail = res->getString("email");
+	std::string actualPassword = res->getString("password");
+
+	if (email == actualEmail && password == actualPassword) {
+		delete stmt;
+		delete res;
+		return true;
+	}
+	
+	else {
+		delete stmt;
+		delete res;
+		return false;
+	}
+
+
+	
+}
+
+std::string connection::getName(const int id) {
+
+	stmt = conn->createStatement();
+	res = stmt->executeQuery("SELECT * FROM users WHERE user_id = " + std::to_string(id));
+	
+	if (!res->next()) {
+		return NULL;
+	}
+
+	std::string name = res->getString("name");
+
+	return name;
+}
+
 connection::~connection() {
 	delete conn;
 };
