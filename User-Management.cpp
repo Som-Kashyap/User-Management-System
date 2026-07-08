@@ -383,7 +383,7 @@ int main()
 	State state = State::Menu;
 	Session session;
 
-	connection conn("tcp://127.0.0.1:3306", "root", "password");
+	connection conn("tcp://127.0.0.1:3306", "root", "***");
 
 	int choice;
 	int currentUserid = -1;
