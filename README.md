@@ -20,9 +20,11 @@ It is integrated with MySQL database for persistence, allows users to save and l
 - Object Oriented Programming
 - Git
 
-## Demo
+## Signup Demo
 <img width="1482" height="710" alt="user-management" src="https://github.com/user-attachments/assets/decd6283-8eba-41e4-8ab7-4a8bcc6d5d51" />
 
+## Login and account details
+<img width="1185" height="566" alt="user-management-login" src="https://github.com/user-attachments/assets/ad57e9db-da45-42e1-a4e0-7a3096f745cf" />
 
 ## Future Improvements
 
