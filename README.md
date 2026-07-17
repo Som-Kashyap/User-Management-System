@@ -20,6 +20,10 @@ It is integrated with MySQL database for persistence, allows users to save and l
 - Object Oriented Programming
 - Git
 
+## Demo
+<img width="1482" height="710" alt="user-management" src="https://github.com/user-attachments/assets/decd6283-8eba-41e4-8ab7-4a8bcc6d5d51" />
+
+
 ## Future Improvements
 
 - Add Admin mode and operations ( view / edit / search / delete users )
